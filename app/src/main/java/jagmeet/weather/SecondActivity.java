@@ -81,7 +81,11 @@ public class SecondActivity extends AppCompatActivity {
         String loadedStringList = savedState.getString("list1", "");
         String[] tempArray = loadedStringList.split(",");
         for (int i = 0;i < tempArray.length; i++){
-            savedIdList.add(Integer.parseInt(tempArray[i]));
+            try {
+                savedIdList.add(Integer.parseInt(tempArray[i]));
+            } catch (NumberFormatException e) {
+                // do something else, or nothing at all.
+            }
         }
     }
 
