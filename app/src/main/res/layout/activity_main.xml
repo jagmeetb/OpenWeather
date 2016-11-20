@@ -12,6 +12,14 @@
     android:orientation="vertical"
     tools:context="jagmeet.weather.MainActivity">
 
+
+    <ListView
+        android:id="@+id/weList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
     <Button
         android:id="@+id/citySubmit"
         android:layout_height="wrap_content"
