@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -13,25 +14,23 @@
     tools:context="jagmeet.weather.MainActivity">
 
 
+
     <ListView
         android:id="@+id/weList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
     </ListView>
 
-    <Button
-        android:id="@+id/citySubmit"
-        android:layout_height="wrap_content"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/citySubmit1"
         android:layout_width="wrap_content"
-        android:text="Click to add a city"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="end|bottom"
+        android:clickable="true"
         android:onClick="cityAdd"
-        android:layout_gravity="center_horizontal"
-        />
-
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
-</LinearLayout>
+        android:foreground="@drawable/ic_add_white_48dp"/>
+</RelativeLayout>

@@ -5,12 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.inputmethodservice.Keyboard;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
@@ -41,54 +48,87 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-public class MainActivity extends AppCompatActivity /*implements MyListFragment.OnDataTransferListener */{
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 	private SharedPreferences savedState;
+	private SharedPreferences prefs;
 	private List<RowItem> rowItems;
+	private List<Integer> idList;
 	private ListView listView;
 	private String apiKey = "4344d513b3eb2b292a658049c6cccf5d";
 	private static Context appContext;
+	Typeface weatherFont;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		appContext = this;
+		weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
+	}
+
+	@Override
+	protected void onPause(){
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+
+		idList = new ArrayList<Integer>();
 		savedState = getSharedPreferences("idSaved", MODE_PRIVATE);
 		String x = savedState.getString("list1", "");
-		TextView txt = (TextView) findViewById(R.id.message);
-	//	txt.setText(String.valueOf(x));
-		txt.setText(x);
+
+		String[] tempArray = x.split(",");
+		for (int i = 0;i < tempArray.length; i++){
+			try {
+				idList.add(Integer.parseInt(tempArray[i]));
+			} catch (NumberFormatException e) {
+				// do something else, or nothing at all.
+			}
+		}
+
 
 		rowItems = new ArrayList<RowItem>();
 
-
-/*
-		try {
-			String s = readJSONFeed("http://api.openweathermap.org/data/2.5/group?id=" + x + "&units=metric&APPID=" +
-					apiKey);
-			txt.setText(s);
-		}
-		catch (Exception e){	}*/
-
+		SharedPreferences sp = getSharedPreferences("appPreferences", MODE_PRIVATE);
+		String preftest = sp.getString("unitPref", null);
 		new ReadJSONFeedTask().execute(
-
 				// API key is required
-				"http://api.openweathermap.org/data/2.5/group?id=" + x + "&units=metric&APPID=" +
+				"http://api.openweathermap.org/data/2.5/group?id=" + x + "&units=" + preftest + "&APPID=" +
 						apiKey
 		);
 
-		//create arraylist
+		listView = (ListView) findViewById(R.id.weList);
+		listView.setOnItemClickListener(this);
+
 
 	}
-
-	/*
-		TODO	implement fragment
 
 	@Override
-	public void onDataTransfer(int cityID){
-
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+		Toast toast = Toast.makeText(appContext, "Item " + (position + 1) + ": \n" + rowItems.get(position), Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+		//toast.show();
+		Intent intent = new Intent(this, DetailActivity.class);
+		intent.putExtra("cityID", idList.get(position));
+		startActivity(intent);
 	}
-	*/
+
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu){
+		getMenuInflater().inflate(R.menu.action_bar, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		Toast toast = Toast.makeText(appContext, "Hi", Toast.LENGTH_SHORT);
+		//toast.show();
+
+		startActivity(new Intent(this, AppPreferenceActivity.class));
+		return true;
+	}
 
 	public void cityAdd(View view){
 		startActivity(new Intent(this, SecondActivity.class));
@@ -167,21 +207,19 @@ public class MainActivity extends AppCompatActivity /*implements MyListFragment.
 				Log.d("JSON", "test1");
 				for (int i = 0; i < jsonArray.length(); i++) {
 
-					String name, temp, main, desc;
+					String id, name, wID, temp, main, desc;
 
 					JSONObject jsonObject2 = jsonArray.getJSONObject(i); // {
 					name = jsonObject2.getString("name");   // "name":
+					id = jsonObject2.getString("id");
 					JSONObject jsonObject4 = jsonObject2.getJSONObject( "main" );   // "main":{
 					temp = jsonObject4.getString( "temp" );           // "temp":
 					JSONArray jsonArray1 = jsonObject2.getJSONArray("weather");
 					JSONObject jsonObject3 = jsonArray1.getJSONObject(0);
+					wID = jsonObject3.getString("id");
 					main = jsonObject3.getString("main");
 					desc = jsonObject3.getString("description");
-					RowItem item = new RowItem(name, temp, main, desc);
-					Log.d("JSON", name);
-					Log.d("JSON", temp);
-					Log.d("JSON", main);
-					Log.d("JSON", desc);
+					RowItem item = new RowItem(id, name, temp, wID, main, desc);
 					rowItems.add(item);
 					Log.d("JSON", String.valueOf(rowItems.size()));
 				} // end for
@@ -189,11 +227,15 @@ public class MainActivity extends AppCompatActivity /*implements MyListFragment.
 				listView = (ListView) findViewById(R.id.weList);
 				CustomListAdapter adapter = new CustomListAdapter(appContext, R.layout.list_item, rowItems);
 				listView.setAdapter(adapter);
-				//txt.setText(String.valueOf(rowItems.size()));
 
 			} catch ( Exception e ) { Log.d( "JSON", e.toString() ); }
 
 
 		}
 	} // end class ReadJSONFeedTask
+
+	public static int getStringIdentifier(Context context, String name) {
+		return context.getResources().getIdentifier(name, "string", context.getPackageName());
+	}
+
 }

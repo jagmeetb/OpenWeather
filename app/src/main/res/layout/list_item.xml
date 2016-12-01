@@ -4,27 +4,40 @@
                 android:layout_height="fill_parent">
 
     <TextView
+        android:id="@+id/WeatherIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="48dp"
+        android:gravity="left"
+
+        />
+
+    <TextView
         android:id="@+id/cityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:layout_toRightOf="@id/WeatherIcon"/>
 
     <TextView
         android:id="@+id/temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cityName"/>
+        android:layout_below="@+id/cityName"
+        android:layout_toRightOf="@id/WeatherIcon"/>
 
     <TextView
         android:id="@+id/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/temp"/>
+        android:layout_below="@id/temp"
+        android:layout_toRightOf="@id/WeatherIcon"/>
 
     <TextView
         android:id="@+id/desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main"/>
+        android:layout_below="@id/main"
+        android:layout_toRightOf="@id/WeatherIcon"/>
 
 </RelativeLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory android:title="WEATHER">
+        <ListPreference
+            android:title="Weather units"
+            android:key="unitPref"
+            android:summary="%s"
+            android:entries="@array/weatherUnit"
+            android:entryValues="@array/weatherUnitValues"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="NOTIFICATIONS">
+        <SwitchPreference
+            android:key="parents"
+            android:summaryOff="Disabled"
+            android:summaryOn="Enabled"
+            android:switchTextOff="ON"
+            android:switchTextOn="OFF"/>
+        <ListPreference
+            android:title="Notification Frequency"
+            android:dependency="parents"
+            android:key="notifPref"
+            android:summary="%s"
+            android:entries="@array/notifyFrequency"
+            android:entryValues="@array/notifyFrequencyValues"
+            />
+
+        <Preference
+            android:title="Test Notification"
+            android:dependency="parents"
+            android:key="testNotif"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>

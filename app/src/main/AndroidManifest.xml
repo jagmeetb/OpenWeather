@@ -24,6 +24,20 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".DetailActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.DETAIL"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".AppPreferenceActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.PREFERENCES"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -29,6 +29,7 @@ public class SecondActivity extends AppCompatActivity {
 
     private List<String> cityCountryNameList = new ArrayList<String>();
     private List<Integer> idList = new ArrayList<Integer>();
+    private List<String> savedCityList = new ArrayList<String>();
     private List<Integer> savedIdList = new ArrayList<Integer>();
     private SharedPreferences savedState;
 
@@ -119,14 +120,15 @@ public class SecondActivity extends AppCompatActivity {
         boolean keepgoing = true;
         boolean alreadySaved = false;
         AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.cityInput);
+        String input = textView.getText().toString();
         for (int i = 0; i < sz && keepgoing; i++){
-            String input = textView.getText().toString();
 
             if (input.equals(cityCountryNameList.get(i))){
                 keepgoing = false;
-                for (int j = 0; i < savedIdList.size(); j++){
-                    if (savedIdList.get(j) == idList.get(i)){
+                for (int j = 0; j < savedIdList.size(); j++){
+                    if (savedIdList.get(j).equals(idList.get(i))){
                         alreadySaved = true;
+                        j = savedIdList.size();
                     }
                 }
                 if (!alreadySaved) {
