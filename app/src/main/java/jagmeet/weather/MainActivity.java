@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private String apiKey = "4344d513b3eb2b292a658049c6cccf5d";
 	private static Context appContext;
 	Typeface weatherFont;
+	boolean shouldExecuteOnResume;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		setContentView(R.layout.activity_main);
 		appContext = this;
 		weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
+		shouldExecuteOnResume = true;
 	}
 
 	@Override
@@ -75,33 +77,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	protected void onResume(){
 		super.onResume();
 
-		idList = new ArrayList<Integer>();
-		savedState = getSharedPreferences("idSaved", MODE_PRIVATE);
-		String x = savedState.getString("list1", "");
+		if (shouldExecuteOnResume) {
+			idList = new ArrayList<Integer>();
+			savedState = getSharedPreferences("idSaved", MODE_PRIVATE);
+			String x = savedState.getString("list1", "");
 
-		String[] tempArray = x.split(",");
-		for (int i = 0;i < tempArray.length; i++){
-			try {
-				idList.add(Integer.parseInt(tempArray[i]));
-			} catch (NumberFormatException e) {
-				// do something else, or nothing at all.
+			String[] tempArray = x.split(",");
+			for (int i = 0; i < tempArray.length; i++) {
+				try {
+					idList.add(Integer.parseInt(tempArray[i]));
+				} catch (NumberFormatException e) {
+					// do something else, or nothing at all.
+				}
 			}
+
+
+			rowItems = new ArrayList<RowItem>();
+
+			SharedPreferences sp = getSharedPreferences("appPreferences", MODE_PRIVATE);
+			String preftest = sp.getString("unitPref", null);
+			new ReadJSONFeedTask().execute(
+					// API key is required
+					"http://api.openweathermap.org/data/2.5/group?id=" + x + "&units=" + preftest + "&APPID=" +
+							apiKey
+			);
+
+			listView = (ListView) findViewById(R.id.weList);
+			listView.setOnItemClickListener(this);
 		}
-
-
-		rowItems = new ArrayList<RowItem>();
-
-		SharedPreferences sp = getSharedPreferences("appPreferences", MODE_PRIVATE);
-		String preftest = sp.getString("unitPref", null);
-		new ReadJSONFeedTask().execute(
-				// API key is required
-				"http://api.openweathermap.org/data/2.5/group?id=" + x + "&units=" + preftest + "&APPID=" +
-						apiKey
-		);
-
-		listView = (ListView) findViewById(R.id.weList);
-		listView.setOnItemClickListener(this);
-
+		else{
+			shouldExecuteOnResume = true;
+			Log.d("BOOL", "shouldExe set to TRUE");
+		}
 
 	}
 
@@ -110,8 +117,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		Toast toast = Toast.makeText(appContext, "Item " + (position + 1) + ": \n" + rowItems.get(position), Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 		//toast.show();
+
+
+		shouldExecuteOnResume = false;
 		Intent intent = new Intent(this, DetailActivity.class);
 		intent.putExtra("cityID", idList.get(position));
+		intent.putExtra("cityName", rowItems.get(position).getCityName());
 		startActivity(intent);
 	}
 

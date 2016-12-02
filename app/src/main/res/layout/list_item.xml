@@ -21,21 +21,22 @@
         android:id="@+id/cityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="25dp"
         android:layout_toRightOf="@id/WeatherIcon"/>
 
     <TextView
         android:id="@+id/temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cityName"
-        android:layout_toRightOf="@id/WeatherIcon"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right"
+        android:paddingTop="15dp"
+        android:textSize="24dp"/>
 
     <TextView
         android:id="@+id/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/temp"
+        android:layout_below="@id/cityName"
         android:layout_toRightOf="@id/WeatherIcon"/>
 
     <TextView
