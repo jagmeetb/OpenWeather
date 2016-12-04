@@ -16,17 +16,15 @@
     </string-array>
 
     <string-array name="notifyFrequency">
-        <item name="1">Every hour</item>
-        <item name="2">Every 6 hours</item>
-        <item name="3">Every 12 hours</item>
-        <item name="4">Once a day</item>
+        <item name="1">Every 6 hours</item>
+        <item name="2">Every 12 hours</item>
+        <item name="3">Once a day</item>
     </string-array>
 
     <string-array name="notifyFrequencyValues">
-        <item name="1">1</item>
-        <item name="2">6</item>
-        <item name="3">12</item>
-        <item name="4">24</item>
+        <item name="1">6</item>
+        <item name="2">12</item>
+        <item name="3">24</item>
     </string-array>
 
     <!--    Mapping weather codes to icons    -->

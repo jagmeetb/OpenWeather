@@ -9,6 +9,7 @@
             android:summary="%s"
             android:entries="@array/weatherUnit"
             android:entryValues="@array/weatherUnitValues"
+            android:defaultValue="metric"
             />
     </PreferenceCategory>
 

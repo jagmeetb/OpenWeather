@@ -7,8 +7,6 @@
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp">
 
-
-
     <TextView
         android:id="@+id/WeatherIcon"
         android:layout_width="match_parent"

@@ -1,6 +1,8 @@
 package jagmeet.weather;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private List<Integer> idList;
 	private ListView listView;
 	private String apiKey = "4344d513b3eb2b292a658049c6cccf5d";
+	private ArrayList<String> notifMsg;
 	private static Context appContext;
 	Typeface weatherFont;
 	boolean shouldExecuteOnResume;
@@ -66,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		appContext = this;
 		weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
 		shouldExecuteOnResume = true;
+
+		//setAlarm();
 	}
 
 	@Override
@@ -94,8 +100,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 			rowItems = new ArrayList<RowItem>();
 
-			SharedPreferences sp = getSharedPreferences("appPreferences", MODE_PRIVATE);
-			String preftest = sp.getString("unitPref", null);
+			prefs = getSharedPreferences("appPreferences", MODE_PRIVATE);
+			String preftest = prefs.getString("unitPref", null);
 			new ReadJSONFeedTask().execute(
 					// API key is required
 					"http://api.openweathermap.org/data/2.5/group?id=" + x + "&units=" + preftest + "&APPID=" +
@@ -104,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 			listView = (ListView) findViewById(R.id.weList);
 			listView.setOnItemClickListener(this);
+
+			//setAlarm();
 		}
 		else{
 			shouldExecuteOnResume = true;
@@ -137,7 +145,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		Toast toast = Toast.makeText(appContext, "Hi", Toast.LENGTH_SHORT);
 		//toast.show();
 
-		startActivity(new Intent(this, AppPreferenceActivity.class));
+		Intent intent = new Intent(this, AppPreferenceActivity.class);
+		Bundle b = new Bundle();
+		b.putStringArrayList("list", notifMsg);
+		intent.putExtras(b);
+
+		startActivity(intent);
 		return true;
 	}
 
@@ -145,6 +158,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		startActivity(new Intent(this, SecondActivity.class));
 	}
 
+	public void setAlarm(){
+		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+		Intent notificationIntent  = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+		notificationIntent.addCategory("android.intent.category.DEFAULT");
+		Bundle b = new Bundle();
+		b.putStringArrayList("list", notifMsg);
+		notificationIntent.putExtras(b);
+
+		PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		Calendar cal = Calendar.getInstance();
+
+		boolean notifySetting = prefs.getBoolean("parents", false);
+
+		if (notifySetting){
+			String xd = prefs.getString("notifPref", null);
+			int x = Integer.parseInt(xd);
+
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.add(Calendar.DAY_OF_YEAR, 1);
+
+			//milliseconds * seconds * minutes * hours
+			int interval = 1000 * 60 * 60 * x;
+
+			//alarmManager.cancel(broadcast);
+			alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), interval, broadcast);
+		}
+		else{
+			alarmManager.cancel(broadcast);
+		}
+	}
 
 	private String readJSONFeed( String urlString ) {
 
@@ -153,46 +200,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		// 1. HTTP processing
 		//    - connect to a web service by using the HTTP GET method
 
-		HttpClient client = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet( urlString );
+		int statusCode = 0;
 
-		try {
+		while (statusCode != 200) {
+			HttpClient client = new DefaultHttpClient();
+			HttpGet httpGet = new HttpGet(urlString);
+
+			try {
 
 
-			Log.d("JSON", "HTTPClinet: execute " + urlString);
-			HttpResponse response = client.execute( httpGet );
+				Log.d("JSON", "HTTPClinet: execute " + urlString);
+				HttpResponse response = client.execute(httpGet);
 
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
+				StatusLine statusLine = response.getStatusLine();
+				statusCode = statusLine.getStatusCode();
 
-			if (statusCode == 200) {
+				if (statusCode == 200) {
 
-				HttpEntity entity = response.getEntity();
+					HttpEntity entity = response.getEntity();
 
-				InputStream content = entity.getContent();
+					InputStream content = entity.getContent();
 
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader( content ) );
+					BufferedReader reader = new BufferedReader(
+							new InputStreamReader(content));
 
-				String line;
+					String line;
 
-				// 2. Build the JSON string
-				while ((line = reader.readLine()) != null) {
+					// 2. Build the JSON string
+					while ((line = reader.readLine()) != null) {
 
-					stringBuilder.append(line);
+						stringBuilder.append(line);
+					}
+				} else {
+					Log.d("JSON", "Failed to download file");
 				}
-			} else {
-				Log.d( "JSON", "Failed to download file" );
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			Log.e("JSON", stringBuilder.toString());
 
-		Log.e ("JSON", stringBuilder.toString() );
-		return stringBuilder.toString();
+		}return stringBuilder.toString();
 	}
 
 	private class ReadJSONFeedTask extends AsyncTask<String, List<RowItem>, String> { // gerneric types: <...>
@@ -216,6 +267,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 				JSONArray jsonArray = jsonObject.getJSONArray( "list" ); // "list":[
 				Log.d("JSON", "test1");
+
+				notifMsg = new ArrayList<String>();
+
 				for (int i = 0; i < jsonArray.length(); i++) {
 
 					String id, name, wID, temp, main, desc;
@@ -233,11 +287,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 					RowItem item = new RowItem(id, name, temp, wID, main, desc);
 					rowItems.add(item);
 					Log.d("JSON", String.valueOf(rowItems.size()));
+					notifMsg.add(name + ": " + temp + "° " + main);
 				} // end for
 
 				listView = (ListView) findViewById(R.id.weList);
 				CustomListAdapter adapter = new CustomListAdapter(appContext, R.layout.list_item, rowItems);
 				listView.setAdapter(adapter);
+				setAlarm();
 
 			} catch ( Exception e ) { Log.d( "JSON", e.toString() ); }
 
