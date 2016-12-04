@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private ListView listView;
 	private String apiKey = "4344d513b3eb2b292a658049c6cccf5d";
 	private ArrayList<String> notifMsg;
+	CustomListAdapter adapter;
 	private static Context appContext;
 	Typeface weatherFont;
 	boolean shouldExecuteOnResume;
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
 		shouldExecuteOnResume = true;
 
-		//setAlarm();
 	}
 
 	@Override
@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		super.onResume();
 
 		if (shouldExecuteOnResume) {
+
+
 			idList = new ArrayList<Integer>();
 			savedState = getSharedPreferences("idSaved", MODE_PRIVATE);
 			String x = savedState.getString("list1", "");
@@ -110,8 +112,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 			listView = (ListView) findViewById(R.id.weList);
 			listView.setOnItemClickListener(this);
-
-			//setAlarm();
 		}
 		else{
 			shouldExecuteOnResume = true;
@@ -177,10 +177,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			String xd = prefs.getString("notifPref", null);
 			int x = Integer.parseInt(xd);
 
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.add(Calendar.DAY_OF_YEAR, 1);
+			if (x == 24) {
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.add(Calendar.DAY_OF_YEAR, 1);
+			}
+			else if (x == 12){
+				int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+				while (hour % 12 != 0){
+					hour++;
+				}
+				cal.set(Calendar.HOUR_OF_DAY, hour);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+			}
+			else if (x == 6){
+				int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+				while (hour % 6 != 0){
+					hour++;
+				}
+				cal.set(Calendar.HOUR_OF_DAY, hour);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+			}
 
 			//milliseconds * seconds * minutes * hours
 			int interval = 1000 * 60 * 60 * x;
@@ -248,6 +268,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	private class ReadJSONFeedTask extends AsyncTask<String, List<RowItem>, String> { // gerneric types: <...>
 
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+			listView = (ListView) findViewById(R.id.weList);
+			listView.setAdapter(null);
+		}
+
 		// 1. invoked on the background thread (i.e. asynchronous processing)!
 		protected String doInBackground( String... urls ) {
 			return readJSONFeed( urls[0] ); // get the JSON string by web service and return it
@@ -291,9 +318,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				} // end for
 
 				listView = (ListView) findViewById(R.id.weList);
-				CustomListAdapter adapter = new CustomListAdapter(appContext, R.layout.list_item, rowItems);
+				adapter = new CustomListAdapter(appContext, R.layout.list_item, rowItems);
 				listView.setAdapter(adapter);
-				setAlarm();
 
 			} catch ( Exception e ) { Log.d( "JSON", e.toString() ); }
 

@@ -195,7 +195,7 @@ public class DetailActivity extends AppCompatActivity{
 				listView = (ListView) findViewById(R.id.detail);
 				CustomDetailAdapter adapter = new CustomDetailAdapter(appContext, R.layout.detail_item, detailItem);
 				listView.setAdapter(adapter);
-
+				listView.setClickable(false);
 
 
 			} catch ( Exception e ) { Log.d( "JSON", e.toString() ); }

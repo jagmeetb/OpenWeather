@@ -13,11 +13,27 @@
         android:layout_height="wrap_content">
     </ListView>
 
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/detail"
+        android:background="#cdd2d8"/>
+
+    <TextView
+        android:id="@+id/seperator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Forecast for next 4 days"
+        android:paddingTop="15dp"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/line1"/>
+
     <ListView
         android:id="@+id/forecast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/detail">
+        android:layout_below="@id/seperator">
     </ListView>
 
 

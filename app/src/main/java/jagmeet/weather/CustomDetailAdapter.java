@@ -33,14 +33,16 @@ public class CustomDetailAdapter extends ArrayAdapter<DetailItem> {
 	}
 
 	private class ViewHolder{
-		TextView name;
+		//TextView name;
 		TextView temp;
 		TextView weather;
-		TextView main;
+		//TextView main;
 		TextView desc;
 		TextView min;
 		TextView max;
 		TextView humidity;
+		TextView sunriseIcon;
+		TextView sunsetIcon;
 		TextView sunrise;
 		TextView sunset;
 	}
@@ -55,14 +57,16 @@ public class CustomDetailAdapter extends ArrayAdapter<DetailItem> {
 
 			holder = new ViewHolder();
 
-			holder.name = (TextView) convertView.findViewById(R.id.cityName);
+			//holder.name = (TextView) convertView.findViewById(R.id.cityName);
 			holder.temp = (TextView) convertView.findViewById(R.id.temp);
 			holder.weather = (TextView) convertView.findViewById(R.id.WeatherIcon);
-			holder.main	= (TextView) convertView.findViewById(R.id.main);
+			//holder.main	= (TextView) convertView.findViewById(R.id.main);
 			holder.desc = (TextView) convertView.findViewById(R.id.desc);
 			holder.min = (TextView) convertView.findViewById(R.id.min);
 			holder.max = (TextView) convertView.findViewById(R.id.max);
 			holder.humidity = (TextView) convertView.findViewById(R.id.humidity);
+			holder.sunriseIcon = (TextView) convertView.findViewById(R.id.sunrise_icon);
+			holder.sunsetIcon = (TextView) convertView.findViewById(R.id.sunset_icon);
 			holder.sunrise = (TextView) convertView.findViewById(R.id.sunrise);
 			holder.sunset = (TextView) convertView.findViewById(R.id.sunset);
 
@@ -76,40 +80,46 @@ public class CustomDetailAdapter extends ArrayAdapter<DetailItem> {
 		String unit = pref.getString("unitPref", null);
 		String append = "";
 		if (unit.equals("imperial")){
-			append = "° F";
+			append = "°F";
 		}
 		else if (unit.equals("kelvin")){
-			append = "° K";
+			append = "°K";
 		}
 		else{
-			append = "° C";
+			append = "°C";
 		}
 
-		holder.name.setText(detailItem.getCityName());
+		//holder.name.setText(detailItem.getCityName());
 		holder.temp.setText(detailItem.getTemp() + append);
-		holder.main.setText(detailItem.getMain());
+		//holder.main.setText(detailItem.getMain());
 		holder.desc.setText(detailItem.getDescription());
-		holder.min.setText(detailItem.getMin());
-		holder.max.setText(detailItem.getMax());
-		holder.humidity.setText(detailItem.getHumidity());
+		holder.min.setText("Min: " + detailItem.getMin() + append);
+		holder.max.setText("Max: " + detailItem.getMax() + append);
+		holder.humidity.setText("Humidity: " + detailItem.getHumidity() + "%");
 
 		long sunr = Long.parseLong(detailItem.getSunrise());
 		Date date = new Date(sunr * 1000);
-		SimpleDateFormat format = new SimpleDateFormat("h:mm a", Locale.US);
+		SimpleDateFormat format = new SimpleDateFormat("h:mm", Locale.US);
 		format.setTimeZone(TimeZone.getTimeZone("EST"));
-		holder.sunrise.setText("Sunrise: " + format.format(date));
+		holder.sunrise.setText(format.format(date));
 
 		long suns = Long.parseLong(detailItem.getSunset());
 		date = new Date(suns * 1000);
-		format = new SimpleDateFormat("h:mm a", Locale.US);
+		format = new SimpleDateFormat("h:mm", Locale.US);
 		format.setTimeZone(TimeZone.getTimeZone("EST"));
-		holder.sunset.setText("Sunset: " + format.format(date));
+		holder.sunset.setText(format.format(date));
 
 
 		Typeface weatherFont = Typeface.createFromAsset(context.getAssets(), "fonts/weather.ttf");
 		holder.weather.setTypeface(weatherFont);
 		int icon = getStringIdentifier(context, "wi_owm_" + detailItem.getWeatherID());
 		holder.weather.setText(icon);
+
+		holder.sunriseIcon.setTypeface(weatherFont);
+		holder.sunsetIcon.setTypeface(weatherFont);
+
+		holder.sunriseIcon.setText(R.string.wi_sunrise);
+		holder.sunsetIcon.setText(R.string.wi_sunset);
 
 		return convertView;
 	}

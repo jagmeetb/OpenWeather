@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +35,7 @@ public class CustomForecastAdapter extends ArrayAdapter<ForecastItem> {
 		TextView temp;
 		TextView weather;
 		TextView main;
+		TextView date;
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent){
@@ -49,6 +51,7 @@ public class CustomForecastAdapter extends ArrayAdapter<ForecastItem> {
 			holder.temp = (TextView) convertView.findViewById(R.id.temp1);
 			holder.weather = (TextView) convertView.findViewById(R.id.WeatherIcon1);
 			holder.main	= (TextView) convertView.findViewById(R.id.main1);
+			holder.date	= (TextView) convertView.findViewById(R.id.date);
 
 			convertView.setTag(holder);
 		}
@@ -78,6 +81,10 @@ public class CustomForecastAdapter extends ArrayAdapter<ForecastItem> {
 		int icon = getStringIdentifier(context, "wi_owm_" + forecastItem.getId());
 		holder.weather.setText(icon);
 
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_YEAR, position + 1);
+		SimpleDateFormat simpleDate =  new SimpleDateFormat("MMM dd");
+		holder.date.setText(simpleDate.format(cal.getTime()));
 		return convertView;
 	}
 

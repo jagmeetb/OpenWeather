@@ -8,23 +8,33 @@
                 android:paddingLeft="10dp">
 
     <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        />
+
+    <TextView
         android:id="@+id/WeatherIcon1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:gravity="left"
+        android:paddingLeft="30dp"
+        android:gravity="center_vertical"
+        android:layout_toRightOf="@id/date"
         />
 
     <TextView
         android:id="@+id/main1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:layout_toRightOf="@id/WeatherIcon1"/>
 
     <TextView
         android:id="@+id/temp1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"/>
+        android:layout_height="match_parent"
+        android:gravity="right|center_vertical"/>
 
 </RelativeLayout>

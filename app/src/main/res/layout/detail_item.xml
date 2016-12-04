@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:paddingBottom="5dp"
+                android:paddingBottom="15dp"
                 android:paddingTop="5dp"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp">
@@ -11,64 +11,97 @@
         android:id="@+id/WeatherIcon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="64dp"
         android:gravity="center_horizontal"
         />
 
     <TextView
-        android:id="@+id/cityName"
-        android:layout_width="wrap_content"
+        android:id="@+id/desc"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="40dp"
+        android:gravity="center_horizontal"
+        android:paddingTop="-30dp"
         android:layout_below="@id/WeatherIcon"/>
 
     <TextView
         android:id="@+id/temp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cityName"/>
+        android:textSize="36dp"
+        android:gravity="center_horizontal"
+        android:paddingBottom="15dp"
+        android:layout_below="@+id/desc"/>
 
-    <TextView
-        android:id="@+id/main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/temp"/>
-
-    <TextView
-        android:id="@+id/desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/main"/>
 
     <TextView
         android:id="@+id/min"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="left"
+        android:paddingTop="20dp"
+        android:textSize="15dp"
         android:layout_below="@id/desc"/>
 
     <TextView
         android:id="@+id/max"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/min"/>
+        android:gravity="right"
+        android:paddingTop="20dp"
+        android:textSize="15dp"
+        android:layout_below="@id/desc"/>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/temp"
+        android:background="#cdd2d8"/>
 
     <TextView
         android:id="@+id/humidity"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/max"/>
+        android:paddingTop="27dp"
+        android:textSize="22dp"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/line"/>
+
+    <TextView
+        android:id="@+id/sunrise_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:textSize="20dp"
+        android:paddingLeft="5dp"
+        android:paddingTop="15dp"
+        android:layout_below="@id/line"/>
 
     <TextView
         android:id="@+id/sunrise"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/humidity"/>
+        android:textSize="20dp"
+        android:layout_below="@id/sunrise_icon"/>
+
+    <TextView
+        android:id="@+id/sunset_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:paddingRight="5dp"
+        android:textSize="20dp"
+        android:paddingTop="15dp"
+        android:layout_below="@id/line"/>
 
     <TextView
         android:id="@+id/sunset"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sunrise"/>
+        android:gravity="right"
+        android:textSize="20dp"
+        android:layout_below="@id/sunset_icon"/>
 
 
 </RelativeLayout>

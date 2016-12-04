@@ -9,6 +9,7 @@ public class ForecastItem {
 	private String main;
 	private String description;
 	public String temp;
+	public String date;
 
 	public ForecastItem(String id, String main, String description, String temp){
 		this.id = id;
