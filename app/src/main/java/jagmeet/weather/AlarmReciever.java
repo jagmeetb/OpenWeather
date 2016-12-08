@@ -37,7 +37,7 @@ public class AlarmReciever extends BroadcastReceiver {
 		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-		Notification notification = builder.setContentTitle("Demo")
+		Notification notification = builder.setContentTitle("Weather Report")
 				.setContentText(list.get(0))
 				.setTicker("New message!")
 				.setSmallIcon(R.mipmap.ic_launcher)

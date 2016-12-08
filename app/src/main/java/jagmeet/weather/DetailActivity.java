@@ -86,6 +86,9 @@ public class DetailActivity extends AppCompatActivity{
 		forecastItems = new ArrayList<ForecastItem>();
 		SharedPreferences sp = getSharedPreferences("appPreferences", MODE_PRIVATE);
 		String preftest = sp.getString("unitPref", null);
+		if (preftest == null){
+			preftest = "metric";
+		}
 
 		new DetailActivity.ReadJSONFeedTask().execute(
 				// API key is required

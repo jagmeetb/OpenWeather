@@ -61,6 +61,9 @@ public class CustomForecastAdapter extends ArrayAdapter<ForecastItem> {
 		PREF_NAME = "appPreferences";
 		pref = getPrefs(context);
 		String unit = pref.getString("unitPref", null);
+		if (unit == null){
+			unit = "metric";
+		}
 		String append = "";
 		if (unit.equals("imperial")){
 			append = "° F";

@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 			prefs = getSharedPreferences("appPreferences", MODE_PRIVATE);
 			String preftest = prefs.getString("unitPref", null);
+			if (preftest == null){
+				preftest = "metric";
+			}
 			new ReadJSONFeedTask().execute(
 					// API key is required
 					"http://api.openweathermap.org/data/2.5/group?id=" + x + "&units=" + preftest + "&APPID=" +
@@ -99,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 			listView = (ListView) findViewById(R.id.weList);
 			listView.setOnItemClickListener(this);
+			setAlarm();
 		}
 		else{
 			shouldExecuteOnResume = true;
@@ -160,8 +164,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		boolean notifySetting = prefs.getBoolean("parents", false);
 
-		if (notifySetting){
+		if (notifySetting == true){
 			String xd = prefs.getString("notifPref", null);
+			if (xd == null || xd.isEmpty()){
+				xd = "24";
+			}
 			int x = Integer.parseInt(xd);
 
 			if (x == 24) {
